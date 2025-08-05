@@ -3,6 +3,50 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import BarChart from "./bar-chart";
+
+// Chart data store - ensures consistent data for blocks with same ID
+const blockChartData: Record<
+  string,
+  { data: number[]; heroPercentage: string }
+> = {
+  "block-a": {
+    data: [8, 7, 6, 5, 4, 3, 2, 2, 1, 3, 2, 1, 1, 1, 1, 3, 2, 1, 1, 1],
+    heroPercentage: "6%",
+  },
+  "block-b": {
+    data: [5, 6, 7, 8, 7, 6, 5, 4, 3, 4, 5, 6, 5, 4, 3, 2, 3, 4, 3, 2],
+    heroPercentage: "12%",
+  },
+  "block-c": {
+    data: [3, 4, 5, 6, 7, 6, 5, 4, 5, 6, 7, 6, 5, 4, 3, 4, 5, 4, 3, 2],
+    heroPercentage: "8%",
+  },
+  "block-d": {
+    data: [7, 6, 5, 4, 3, 4, 5, 6, 5, 4, 3, 2, 3, 4, 5, 4, 3, 2, 1, 2],
+    heroPercentage: "15%",
+  },
+  "block-e": {
+    data: [4, 5, 6, 5, 4, 3, 4, 5, 6, 5, 4, 3, 2, 3, 4, 5, 4, 3, 2, 1],
+    heroPercentage: "9%",
+  },
+  "block-f": {
+    data: [6, 5, 4, 3, 2, 3, 4, 5, 4, 3, 2, 1, 2, 3, 4, 3, 2, 1, 2, 3],
+    heroPercentage: "11%",
+  },
+  "block-g": {
+    data: [2, 3, 4, 5, 6, 5, 4, 3, 2, 3, 4, 5, 4, 3, 2, 1, 2, 3, 4, 3],
+    heroPercentage: "7%",
+  },
+  "block-h": {
+    data: [5, 4, 3, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1, 2, 3, 4, 3, 2, 1, 2],
+    heroPercentage: "13%",
+  },
+  "block-i": {
+    data: [3, 2, 3, 4, 5, 4, 3, 2, 3, 4, 5, 4, 3, 2, 1, 2, 3, 4, 3, 2],
+    heroPercentage: "10%",
+  },
+};
 
 // Define different states with their block configurations
 const states = [
@@ -10,69 +54,69 @@ const states = [
     id: "state1",
     name: "State 1",
     blocks: [
-      { id: "block-a", color: "bg-blue-500", label: "Block A" },
-      { id: "block-b", color: "bg-green-500", label: "Block B" },
+      { id: "block-a", label: "Block A" },
+      { id: "block-b", label: "Block B" },
     ],
   },
   {
     id: "state2",
     name: "State 2",
     blocks: [
-      { id: "block-a", color: "bg-blue-500", label: "Block A" },
-      { id: "block-c", color: "bg-purple-500", label: "Block C" },
-      { id: "block-d", color: "bg-orange-500", label: "Block D" },
-      { id: "block-e", color: "bg-pink-500", label: "Block E" },
+      { id: "block-a", label: "Block A" },
+      { id: "block-c", label: "Block C" },
+      { id: "block-d", label: "Block D" },
+      { id: "block-e", label: "Block E" },
     ],
   },
   {
     id: "state3",
     name: "State 3",
     blocks: [
-      { id: "block-b", color: "bg-green-500", label: "Block B" },
-      { id: "block-d", color: "bg-orange-500", label: "Block D" },
-      { id: "block-f", color: "bg-red-500", label: "Block F" },
+      { id: "block-b", label: "Block B" },
+      { id: "block-d", label: "Block D" },
+      { id: "block-f", label: "Block F" },
     ],
   },
   {
     id: "state4",
     name: "State 4",
-    blocks: [{ id: "block-g", color: "bg-indigo-500", label: "Block G" }],
+    blocks: [{ id: "block-g", label: "Block G" }],
   },
   {
     id: "state5",
     name: "State 5",
     blocks: [
-      { id: "block-a", color: "bg-blue-500", label: "Block A" },
-      { id: "block-f", color: "bg-red-500", label: "Block F" },
-      { id: "block-h", color: "bg-yellow-500", label: "Block H" },
-      { id: "block-i", color: "bg-teal-500", label: "Block I" },
+      { id: "block-a", label: "Block A" },
+      { id: "block-f", label: "Block F" },
+      { id: "block-h", label: "Block H" },
+      { id: "block-i", label: "Block I" },
     ],
   },
   {
     id: "state6",
     name: "State 6",
     blocks: [
-      { id: "block-g", color: "bg-indigo-500", label: "Block G" },
-      { id: "block-h", color: "bg-yellow-500", label: "Block H" },
+      { id: "block-g", label: "Block G" },
+      { id: "block-h", label: "Block H" },
     ],
   },
   {
     id: "state7",
     name: "State 7",
     blocks: [
-      { id: "block-c", color: "bg-purple-500", label: "Block C" },
-      { id: "block-e", color: "bg-pink-500", label: "Block E" },
-      { id: "block-i", color: "bg-teal-500", label: "Block I" },
+      { id: "block-c", label: "Block C" },
+      { id: "block-e", label: "Block E" },
+      { id: "block-i", label: "Block I" },
     ],
   },
   {
     id: "state8",
     name: "State 8",
     blocks: [
-      { id: "block-a", color: "bg-blue-500", label: "Block A" },
-      { id: "block-b", color: "bg-green-500", label: "Block B" },
-      { id: "block-c", color: "bg-purple-500", label: "Block C" },
-      { id: "block-d", color: "bg-orange-500", label: "Block D" },
+      { id: "block-a", label: "Block A" },
+      { id: "block-b", label: "Block B" },
+      { id: "block-c", label: "Block C" },
+      { id: "block-d", label: "Block D" },
     ],
   },
 ];
@@ -105,55 +149,53 @@ export default function UIState({ state }: { state: number }) {
                 : "grid-cols-2"
             } max-w-6xl mx-auto`}
             layout
-            transition={{
-              type: "spring",
-              damping: 20,
-              stiffness: 300,
-            }}
+            // transition={{
+            //   type: "spring",
+            //   damping: 20,
+            //   stiffness: 300,
+            // }}
           >
             <AnimatePresence mode={"popLayout"}>
-              {currentState.blocks.map((block, index) => (
-                <motion.div
-                  key={block.id}
-                  layoutId={block.id}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{
-                    layout: {
-                      damping: 20,
-                      stiffness: 300,
-                    },
-                    opacity: {
-                      duration: 0.4,
-                      ease: "easeOut",
-                    },
-                    scale: {
-                      duration: 0.4,
-                      ease: "easeOut",
-                    },
-                  }}
-                  className={`${block.color} rounded-xl shadow-lg flex items-center justify-center text-white font-bold text-xl h-[200px] w-full relative overflow-hidden`}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <div className="text-center">
-                    <div className="text-2xl mb-2">{block.label}</div>
-                    <div className="text-sm opacity-75">ID: {block.id}</div>
-                  </div>
+              {currentState.blocks.map((block, index) => {
+                const chartData = blockChartData[block.id];
+                return (
+                  <motion.div
+                    key={block.id}
+                    layoutId={block.id}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{
+                      layout: {
+                        damping: 20,
+                        stiffness: 300,
+                      },
+                      opacity: {
+                        duration: 0.4,
+                        ease: "easeOut",
+                      },
+                      scale: {
+                        duration: 0.4,
+                        ease: "easeOut",
+                      },
+                    }}
+                    className="relative border border-gray-700"
+                  >
+                    {/* Block ID at the top */}
+                    <div className="text-xs text-gray-400 mb-2 font-mono">
+                      {block.id}
+                    </div>
 
-                  {/* Subtle pattern overlay */}
-                  <div className="absolute inset-0 opacity-10">
-                    <div
-                      className="w-full h-full"
-                      style={{
-                        backgroundImage: `radial-gradient(circle at 20% 50%, white 2px, transparent 2px), radial-gradient(circle at 80% 50%, white 2px, transparent 2px)`,
-                        backgroundSize: "30px 30px",
-                      }}
+                    {/* BarChart component */}
+                    <BarChart
+                      title={block.label}
+                      heroNumber={chartData?.heroPercentage || "0%"}
+                      heroPercentage={chartData?.heroPercentage || "0%"}
+                      data={chartData?.data || [1, 1, 1, 1, 1]}
                     />
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                );
+              })}
             </AnimatePresence>
           </motion.div>
         </div>
